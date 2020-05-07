@@ -23,7 +23,7 @@ stages:
           - task: ArchiveFiles@2
             displayName: Artifacts
             inputs:
-              rootFolderOrFile: 'dist/track-cops'
+              rootFolderOrFile: 'dist/track-cops/'
               includeRootFolder: true
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/dist.zip'
