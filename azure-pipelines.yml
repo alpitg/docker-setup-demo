@@ -9,23 +9,28 @@ stages:
     jobs:
       - job: NpmInstall
         steps:
-          - bash: echo "npm install"
           - task: Npm@1
+            displayName: npm install
             inputs:
               command: 'install'
 
       - job: NpmPublish
         steps:
           - task: Npm@1
+            displayName: npm build
             inputs:
-              command: 'publish'
+              command: 'custom'
+              customCommand: 'run build'
+
           - task: ArchiveFiles@2
+            displayName: Artifacts
             inputs:
-              rootFolderOrFile: '$(Build.BinariesDirectory)'
+              rootFolderOrFile: '$(Build.BinariesDirectory)/dist'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/dist.zip'
               replaceExistingArchive: true
+
           - task: PublishBuildArtifacts@1
             inputs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
