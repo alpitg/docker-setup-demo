@@ -33,7 +33,6 @@ stages:
             inputs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               ArtifactName: 'drop'
-              publishLocation: 'Container'
 
   - stage: QA
     dependsOn: Build
