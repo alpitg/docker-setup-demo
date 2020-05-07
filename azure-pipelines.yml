@@ -24,12 +24,12 @@ stages:
         #       archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         #       replaceExistingArchive: true
 
-  - stage: Deploy-QA
+  - stage: QA
     dependsOn: Build
     jobs: 
       - job: A
 
-  - stage: Deploy-UAT
+  - stage: UAT
     dependsOn: Build
     jobs:
       - job: A
