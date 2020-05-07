@@ -8,11 +8,19 @@
 stages:
 
   - stage: Build
+    jobs:
+      - job: A
+      - job: B
 
   - stage: QA
     dependsOn: Build
+    jobs: 
+      - job: A
 
   - stage: UAT
     dependsOn: Build
+    jobs:
+      - job: A
+      - job: B
 
 
