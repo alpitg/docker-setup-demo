@@ -1,23 +1,35 @@
-# trigger:
-# - master
-
-# pool:
-#   vmImage: 'ubuntu-latest'
-
+trigger:
+  - master
 
 stages:
 
   - stage: Build
     jobs:
       - job: A
-      - job: B
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - bash: echo "npm install"
+          - task: Npm@1
+            inputs:
+              command: 'install'
 
-  - stage: QA
+      - job: B
+        steps:
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: '$(Build.BinariesDirectory)'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              replaceExistingArchive: true
+
+  - stage: Deploy-QA
     dependsOn: Build
     jobs: 
       - job: A
 
-  - stage: UAT
+  - stage: Deploy-UAT
     dependsOn: Build
     jobs:
       - job: A
