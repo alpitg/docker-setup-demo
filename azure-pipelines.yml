@@ -23,7 +23,7 @@ stages:
           - task: ArchiveFiles@2
             displayName: Artifacts
             inputs:
-              rootFolderOrFile: '$(Build.BinariesDirectory)/dist'
+              rootFolderOrFile: '$(Build.BinariesDirectory)'
               includeRootFolder: true
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/dist.zip'
