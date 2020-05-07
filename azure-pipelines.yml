@@ -24,7 +24,7 @@ stages:
             displayName: Artifacts
             inputs:
               rootFolderOrFile: 'dist/track-cops/'
-              includeRootFolder: true
+              includeRootFolder: false
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/dist.zip'
               replaceExistingArchive: true
