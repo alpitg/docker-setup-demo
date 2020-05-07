@@ -1,20 +1,20 @@
 trigger:
   - master
+pool:
+  vmImage: 'ubuntu-latest'
 
 stages:
 
   - stage: Build
     jobs:
-      - job: A
-        pool:
-          vmImage: 'ubuntu-latest'
+      - job: npmInstall
         steps:
           - bash: echo "npm install"
           - task: Npm@1
             inputs:
               command: 'install'
 
-      - job: B
+      - job: npmPublish
         steps:
           - task: ArchiveFiles@2
             inputs:
