@@ -7,15 +7,13 @@ stages:
 
   - stage: Build
     jobs:
-      - job: NpmInstall
+      - job: NpmPublish
         steps:
           - task: Npm@1
             displayName: npm install
             inputs:
               command: 'install'
 
-      - job: NpmPublish
-        steps:
           - task: Npm@1
             displayName: npm build
             inputs:
