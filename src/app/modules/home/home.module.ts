@@ -1,14 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MainLayoutComponent } from './main-layout/main-layout.component';
+
+import { HomeRoutingModule } from './home-routing.module';
+import { HomeComponent } from './page/home/home.component';
 import { AgmCoreModule } from '@agm/core';
 
 
-
 @NgModule({
-  declarations: [MainLayoutComponent],
+  declarations: [HomeComponent],
   imports: [
     CommonModule,
+    HomeRoutingModule,
     
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyAeA9jeENXhzn4OS-xzSYqLwleLLWytyY8'
@@ -17,7 +19,6 @@ import { AgmCoreModule } from '@agm/core';
       use clientId
       */
     })
-  ],
-  exports: [MainLayoutComponent]
+  ]
 })
-export class LayoutModule { }
+export class HomeModule { }
