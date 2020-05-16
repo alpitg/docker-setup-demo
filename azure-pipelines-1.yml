@@ -50,16 +50,16 @@ stages:
       - job: A
 
 
-  - stage: publish_docker
-    dependsOn: build_apps
-    jobs: 
-      - job: A
+  # - stage: publish_docker
+  #   dependsOn: build_apps
+  #   jobs: 
+  #     - job: A
 
 
-  - stage: deploy
-    dependsOn: build_apps
-    jobs: 
-      - job: A
+  # - stage: deploy
+  #   dependsOn: build_apps
+  #   jobs: 
+  #     - job: A
 
 
 
