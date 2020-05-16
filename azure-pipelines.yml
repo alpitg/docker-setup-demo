@@ -23,8 +23,8 @@ stages:
           - task: ArchiveFiles@2
             displayName: Artifacts
             inputs:
-              rootFolderOrFile: 'dist/track-cops'
-              includeRootFolder: true
+              rootFolderOrFile: 'dist/track-cops/'
+              includeRootFolder: false
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/dist.zip'
               replaceExistingArchive: true
@@ -33,7 +33,6 @@ stages:
             inputs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               ArtifactName: 'drop'
-              publishLocation: 'Container'
 
   - stage: QA
     dependsOn: Build
