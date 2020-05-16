@@ -10,6 +10,15 @@ pool:
   vmImage: 'ubuntu-latest'
 
 
+variables:
+  dockerRegistryServiceConnection: '0815e4b2-605f-43f4-a639-ec8491ecb71a'
+  imageRepository: 'trackcops'
+  # imageRepository: 'trackcopsangular'
+  containerRegistry: 'trackCopsRegistry'
+  dockerfilePath: '**/Dockerfile'
+  tag: '$(Build.BuildId)'
+  imagePullSecret: 'trackcopsregistry1620db6e-auth'
+
 stages:
   - stage: build_apps
     jobs:
@@ -44,25 +53,71 @@ stages:
             publishLocation: 'Container'
 
 
-  - stage: integration
-    dependsOn: build_apps
-    jobs: 
-      - job: A
+  # - stage: integration
+  #   dependsOn: build_apps
+  #   jobs: 
+  #     - job: A
 
 
   - stage: publish_docker
     dependsOn: build_apps
     jobs: 
-      - job: A
+      - job: DockerImageBuild
+        steps:
+        - task: Docker@2
+          displayName: Build and push an image to container registry
+          inputs:
+            containerRegistry: $(containerRegistry)
+            repository: $(imageRepository)
+            command: 'buildAndPush'
+            dockerfile: $(dockerfilePath)
+            tags: |
+              $(tag)
+        
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: '$(Pipeline.Workspace)'
+            artifact: 'manifests'
+            publishLocation: 'pipeline'
+          
 
+        # - task: PublishPipelineArtifact@1
+        #   inputs:
+        #     artifactName: 'manifests'
+        #     path: 'manifests'
+
+        # - upload: manifests
+        #   artifact: manifests
+          
 
   - stage: deploy
-    dependsOn: build_apps
-    jobs: 
-      - job: A
-
-
-
+    dependsOn: publish_docker
+    jobs:
+    - deployment: Deploy
+      displayName: Deploy
+      environment: 'trackcopsangular.default'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: KubernetesManifest@0
+                displayName: Create imagePullSecret
+                inputs:
+                  action: createSecret
+                  secretName: $(imagePullSecret)
+                  dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+                  
+              - task: KubernetesManifest@0
+                displayName: Deploy to Kubernetes cluster
+                inputs:
+                  action: deploy
+                  manifests: |
+                    $(Pipeline.Workspace)/manifests/deployment.yml
+                    $(Pipeline.Workspace)/manifests/service.yml
+                  imagePullSecrets: |
+                    $(imagePullSecret)
+                  containers: |
+                    $(containerRegistry)/$(imageRepository):$(tag)
 
 
 
