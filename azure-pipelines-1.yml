@@ -9,14 +9,67 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
 
-- script: |
-    npm install -g @angular/cli
-    npm install
-    ng build --prod
-  displayName: 'npm install and build'
+stages:
+  - stage: build_apps
+    jobs:
+      - job: frontend_build
+        steps:
+      
+        - task: Npm@1
+          displayName: npm install
+          inputs:
+            command: 'install'
+
+        - task: Npm@1
+          displayName: npm build
+          inputs:
+            command: 'custom'
+            customCommand: 'run build'
+
+        - task: ArchiveFiles@2
+          displayName: Archive file
+          inputs:
+            rootFolderOrFile: 'dist/track-cops'
+            includeRootFolder: false
+            archiveType: 'zip'
+            archiveFile: '$(Build.ArtifactStagingDirectory)/dist.zip'
+            replaceExistingArchive: true
+
+        - task: PublishBuildArtifacts@1
+          displayName: Publish Artifacts
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'drop'
+            publishLocation: 'Container'
+
+
+  - stage: integration
+    dependsOn: build_apps
+    jobs: 
+      - job: A
+
+
+  - stage: integration
+    dependsOn: build_apps
+    jobs: 
+      - job: A
+
+
+  - stage: publish-docker
+    dependsOn: build_apps
+    jobs: 
+      - job: A
+
+
+  - stage: deploy
+    dependsOn: build_apps
+    jobs: 
+      - job: A
+
+
+
+
+
+
+
