@@ -1,0 +1,16 @@
+apiVersion : apps/v1beta1
+kind: Deployment
+metadata:
+  name: trackcopsangular 
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: trackcopsangular 
+    spec:
+      containers:
+        - name: trackcopsangular 
+          image: trackcopsregistry.azurecr.io/trackcopsangular
+          ports:
+          - containerPort: 80
