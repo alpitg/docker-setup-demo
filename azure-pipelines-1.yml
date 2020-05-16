@@ -50,13 +50,7 @@ stages:
       - job: A
 
 
-  - stage: integration
-    dependsOn: build_apps
-    jobs: 
-      - job: A
-
-
-  - stage: publish-docker
+  - stage: publish_docker
     dependsOn: build_apps
     jobs: 
       - job: A
