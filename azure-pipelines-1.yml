@@ -10,6 +10,13 @@ pool:
   vmImage: 'ubuntu-latest'
 
 
+variables:
+  dockerRegistryServiceConnection: '0815e4b2-605f-43f4-a639-ec8491ecb71a'
+  imageRepository: 'trackcops'
+  containerRegistry: 'trackCopsRegistry'
+  dockerfilePath: '**/Dockerfile'
+  tag: '$(Build.BuildId)'
+
 stages:
   - stage: build_apps
     jobs:
@@ -50,10 +57,24 @@ stages:
       - job: A
 
 
-  # - stage: publish_docker
-  #   dependsOn: build_apps
-  #   jobs: 
-  #     - job: A
+  - stage: publish_docker
+    dependsOn: build_apps
+    jobs: 
+      - job: DockerImageBuild
+        steps:
+        - task: Docker@2
+          displayName: Build and push an image to container registry
+          inputs:
+            containerRegistry: $(containerRegistry)
+            repository: $(imageRepository)
+            command: 'buildAndPush'
+            Dockerfile: $(dockerfilePath)
+            tags: |
+              $(tag)
+
+
+
+      
 
 
   # - stage: deploy
