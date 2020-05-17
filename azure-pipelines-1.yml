@@ -131,10 +131,10 @@ stages:
                   
                     # $(Pipeline.Workspace)/manifests/deployment.yml
                     # $(Pipeline.Workspace)/manifests/service.yml
-                    
+
                   manifests: |
-                    $(Build.ArtifactStagingDirectory)/drop/manifests/deployment.yml
-                    $(Build.ArtifactStagingDirectory)/drop/manifests/service.yml
+                     $(Pipeline.Workspace)/drop/manifests/deployment.yml
+                     $(Pipeline.Workspace)/drop/manifests/service.yml
                   imagePullSecrets: |
                     $(imagePullSecret)
                   containers: |
