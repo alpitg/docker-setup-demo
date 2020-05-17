@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: track-cops-angular
+spec:
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  selector:
+    matchLabels:
+      app: track-cops-angular
+  template:
+    metadata:
+      labels:
+        app: track-cops-angular
+    spec:
+      containers:
+        - name: track-cops-angular
+          image: alpitg/trackcops:#{Build.BuildId}#
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 80
+---
+# https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: track-cops-angular
+spec:
+  selector:
+    app: track-cops-angular
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+
