@@ -12,8 +12,8 @@ pool:
 
 variables:
   dockerRegistryServiceConnection: '0815e4b2-605f-43f4-a639-ec8491ecb71a'
-  imageRepository: 'trackcops'
-  # imageRepository: 'trackcopsangular'
+  # imageRepository: 'trackcops'
+  imageRepository: 'trackcopsangular'
   containerRegistry: 'trackCopsRegistry'
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
