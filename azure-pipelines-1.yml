@@ -128,11 +128,13 @@ stages:
                 displayName: Deploy to Kubernetes cluster
                 inputs:
                   action: deploy
+                  
+                    # $(Pipeline.Workspace)/manifests/deployment.yml
+                    # $(Pipeline.Workspace)/manifests/service.yml
+                    
                   manifests: |
                     $(Build.ArtifactStagingDirectory)/drop/manifests/deployment.yml
                     $(Build.ArtifactStagingDirectory)/drop/manifests/service.yml
-                    # $(Pipeline.Workspace)/manifests/deployment.yml
-                    # $(Pipeline.Workspace)/manifests/service.yml
                   imagePullSecrets: |
                     $(imagePullSecret)
                   containers: |
