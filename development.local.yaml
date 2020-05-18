@@ -12,8 +12,6 @@ spec:
       labels:
         app: track-cops-angular
     spec:
-      nodeSelector:
-        "beta.kubernetes.io/os": linux
       containers:
       - name: track-cops-angular
         image: alpitg/trackcops:1
