@@ -13,10 +13,10 @@ stages:
 
 variables:
     GKE_SERVICE_ACCOUNT: ${GKE_SERVICE_ACCOUNT}
-    CF_CLEAN_URL: cleantestedg.cha-net.org
-    CF_REVIEW_URL: review.cha-net.org
-    CF_CHAPROD_URL: manage.cha-net.org
-    CF_SMOPROD_URL: manage.sabacent.org
+    CF_CLEAN_URL: mysite.org
+    CF_REVIEW_URL: mysite.org
+    CF_CHAPROD_URL: mysite.org
+    CF_SMOPROD_URL: mysite.org
     CF_APP_IMAGE: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
 
 build_newui:
@@ -25,19 +25,19 @@ build_newui:
     cache:
         key: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
         paths:
-            - HumanitarianAssistance.WebApi/NewUI/node_modules/
+            - MyApp.WebApi/NewUI/node_modules/
     before_script:
         - apt-get update && apt-get install -y unzip fontconfig locales gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
-        - cd HumanitarianAssistance.WebApi/NewUI/
+        - cd MyApp.WebApi/NewUI/
     script:
         - npm install --quiet
         - npm run build --prod
 
     after_script:
-        - find HumanitarianAssistance.WebApi/NewUI/dist/
+        - find MyApp.WebApi/NewUI/dist/
     artifacts:
         paths:
-            - HumanitarianAssistance.WebApi/NewUI/dist/
+            - MyApp.WebApi/NewUI/dist/
         expire_in: 1 week
     retry: 2
 
@@ -47,18 +47,18 @@ build_oldui:
     cache:
         key: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
         paths:
-            - HumanitarianAssistance.WebApi/OldUI/node_modules/
+            - MyApp.WebApi/OldUI/node_modules/
     before_script:
         - apt-get update && apt-get install -y unzip fontconfig locales gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
-        - cd HumanitarianAssistance.WebApi/OldUI/
+        - cd MyApp.WebApi/OldUI/
     script:
          - npm install --quiet
          - npm run build --prod
     after_script:
-        - find HumanitarianAssistance.WebApi/OldUI/dist/
+        - find MyApp.WebApi/OldUI/dist/
     artifacts:
         paths:
-            - HumanitarianAssistance.WebApi/OldUI/dist/
+            - MyApp.WebApi/OldUI/dist/
         expire_in: 1 week
     retry: 2
 
@@ -70,7 +70,7 @@ build_backend:
         BINARIES_DIRECTORY: bin/
         RELEASE_OBJECTS_DIRECTORY: release/
         NUGET_PACKAGES_DIRECTORY: .nuget/
-        SOURCE_CODE_PATH: HumanitarianAssistance.WebApi/
+        SOURCE_CODE_PATH: MyApp.WebApi/
     cache:
         key: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
         paths:
@@ -218,41 +218,6 @@ deploy_chaprod:
         refs:
             - master
 
-deploy_smoprod:
-    stage: deploy
-    image: devth/helm
-    environment:
-        name: smoprod
-        url: https://${CF_SMOPROD_URL}
-    variables:
-        HOSTING_ENV: Production
-    script:
-        - init_gke
-        - helm upgrade
-          --install
-          --namespace ${KUBE_NAMESPACE}
-          --set web.image="${CF_APP_IMAGE}"
-          --set web.host="${CF_SMOPROD_URL}"
-          --set app.env="${HOSTING_ENV}"
-          --set deployment.namespace="${KUBE_NAMESPACE}"
-          --set ci.project.path="${CI_PROJECT_PATH_SLUG}"
-          --set ci.project.environment="${CI_ENVIRONMENT_SLUG}"
-          --set app.secret.appdbconnectionstring="${LINUX_DBCONNECTION_STRING}"
-          --set app.secret.postgresuser="${POSTGRES_DB_USER}"
-          --set app.secret.postgrespassword="${POSTGRES_DB_PASSWORD}"
-          --set app.secret.appserviceaccount="${APPLICATION_GCP_SERVICEACCOUNT}"
-          --set app.secret.googlebucketname="${APP_GOOGLE_BUCKET_NAME}"
-          --set app.secret.authtenantdomain="${APP_AUTH_TENANT_DOMAIN}"
-          --set app.secret.authwebappclientid="${APP_AUTH_WEBAPP_CLIENT_ID}"
-          --set app.secret.authwebappcallbackurl="${APP_AUTH_WEBAPP_CALLBACK_URL}"
-          --set app.secret.authwebappapiurl="${APP_AUTH_WEBAPP_API_URL}"
-          --set app.secret.authwebapiapiidentifier="${APP_AUTH_WEBAPI_API_IDENTIFIER}"
-          --wait
-          clearfusion
-          ./k8s-chart
-    only:
-        refs:
-            - master
 
 .functions: &functions |
     # Functions
