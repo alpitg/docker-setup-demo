@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  cop-app:
+    container_name: cop-container
+    image: cop
+    ports:
+      - 8080:80
+    build:
+      args:
+        buildno: 1
+      context: .
+      dockerfile: Dockerfile

@@ -50,7 +50,35 @@
 ```
 
 #### vs code & Kubernetes
-  > open dashboard ->> ctrl + shift + p -> kubernetes: OpenDashboard
+  > open dashboard ->> ctrl + shift + p ->> kubernetes: OpenDashboard
+
+
+#### Docker commands
+```
+  docker build -t myImage:1 .
+  docker image ls -a
+  docker run --name my-app-container -d -p 8080:80 my-image-id  
+
+  docker exec -it container-id /bin/sh
+  cd /etc/nginx/ tail -f nginx.conf
+  
+  vi file_path (edit)
+  <press> i (insert)
+  esc + :w (save)
+  shift + ZZ (save)
+
+  docker-compose -f my-docker-compose.yml up
+  docker-compose -f up --build
+
+  docker rmi $(docker images -a -q)
+  docker stop $(docker ps -a -q)
+  docker rm $(docker ps -a -q) -f
+```
+
+##### For stateless/statefull cluster 
+  we must have the -
+  1. cluster depliyment as code
+  2. application developmemt as part of the pipeline
 
 
 
